@@ -14,14 +14,13 @@
 // This module saves and loads from the numpy format.
 // https://docs.scipy.org/doc/numpy/neps/npy-format.html
 
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
 /** Serializes a tensor into a npy file contents. */
 export async function serialize(tensor: tf.Tensor): Promise<ArrayBuffer> {
-  const descr = new Map([
-    ["float32", "<f4"],
-    ["int32", "<i4"],
-  ]).get(tensor.dtype);
+  const descr = new Map([["float32", "<f4"], ["int32", "<i4"]]).get(
+    tensor.dtype,
+  );
 
   // First figure out how long the file is going to be so we can create the
   // output ArrayBuffer.
@@ -29,8 +28,8 @@ export async function serialize(tensor: tf.Tensor): Promise<ArrayBuffer> {
   const versionStr = "\x01\x00";
   const [d, fo, s] = [descr, "False", tensor.shape.join(",") + ","];
   let header = `{'descr': '${d}', 'fortran_order': ${fo}, 'shape': (${s}), }`;
-  const unpaddedLength = 1 + magicStr.length + versionStr.length +
-                         2 + header.length;
+  const unpaddedLength =
+    1 + magicStr.length + versionStr.length + 2 + header.length;
   // Spaces to 16-bit align.
   const padding = " ".repeat((16 - unpaddedLength % 16) % 16);
   header += padding;
@@ -99,12 +98,13 @@ export function parse(ab: ArrayBuffer): tf.Tensor {
   const headerPy = dataViewToAscii(new DataView(ab, pos, headerLen));
   pos += headerLen;
   const bytesLeft = view.byteLength - pos;
-  const headerJson = headerPy.replace("True", "true")
-                             .replace("False", "false")
-                             .replace(/'/g, `"`)
-                             .replace(/,\s*}/, " }")
-                             .replace(/,?\)/, "]")
-                             .replace("(", "[");
+  const headerJson = headerPy
+    .replace("True", "true")
+    .replace("False", "false")
+    .replace(/'/g, `"`)
+    .replace(/,\s*}/, " }")
+    .replace(/,?\)/, "]")
+    .replace("(", "[");
   const header = JSON.parse(headerJson);
   if (header.fortran_order) {
     throw Error("NPY parse error. Implement me.");
@@ -118,28 +118,24 @@ export function parse(ab: ArrayBuffer): tf.Tensor {
     const s = ab.slice(pos, pos + size * 8);
     const ta = new Float32Array(new Float64Array(s));
     return tf.tensor(ta, header.shape, "float32");
-
   } else if (header["descr"] === "<f4") {
     // 4 byte float. float32.
     assertEqual(bytesLeft, size * 4);
     const s = ab.slice(pos, pos + size * 4);
     const ta = new Float32Array(s);
     return tf.tensor(ta, header.shape, "float32");
-
   } else if (header["descr"] === "<i8") {
     // 8 byte int. int64.
     assertEqual(bytesLeft, size * 8);
     const s = ab.slice(pos, pos + size * 8);
     const ta = new Int32Array(s).filter((val, i) => i % 2 === 0);
     return tf.tensor(ta, header.shape, "int32");
-
   } else if (header["descr"] === "|u1") {
     // uint8.
     assertEqual(bytesLeft, size);
     const s = ab.slice(pos, pos + size);
     const ta = new Uint8Array(s);
     return tf.tensor(ta, header.shape, "int32"); // FIXME should be "uint8"
-
   } else {
     throw Error(`Unknown dtype "${header["descr"]}". Implement me.`);
   }
@@ -161,8 +157,10 @@ function writeStrToDataView(view: DataView, str: string, pos: number) {
 }
 
 function assertEqual(actual: number, expected: number) {
-  assert(actual === expected,
-    `actual ${actual} not equal to expected ${expected}`);
+  assert(
+    actual === expected,
+    `actual ${actual} not equal to expected ${expected}`,
+  );
 }
 
 function assert(cond: boolean, msg?: string) {
@@ -172,13 +170,13 @@ function assert(cond: boolean, msg?: string) {
 }
 
 function dataViewToAscii(dv: DataView): string {
-  var out = '';
+  var out = "";
   for (let i = 0; i < dv.byteLength; i++) {
     const val = dv.getUint8(i);
     if (val === 0) {
       break;
     }
-    out += String.fromCharCode(val);  
+    out += String.fromCharCode(val);
   }
   return out;
 }

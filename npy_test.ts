@@ -1,11 +1,11 @@
 import { test, assertEqual } from "liltest";
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 import * as npy from "./npy";
 import { readFileSync } from "fs";
 const { expectArraysClose } = tf.test_util;
 
 async function load(fn: string): Promise<tf.Tensor> {
-  let b = readFileSync(__dirname  + "/testdata/" + fn, null);
+  let b = readFileSync(__dirname + "/testdata/" + fn, null);
   let ab = bufferToArrayBuffer(b);
   return await npy.parse(ab);
 }
@@ -49,7 +49,7 @@ test(async function npy_parse() {
   t = await load("uint8.npy");
   expectArraysClose(t.dataSync(), new Int32Array([0, 127]));
   assertEqual(t.shape, [2]);
-  assertEqual(t.dtype, "int32");  // TODO uint8
+  assertEqual(t.dtype, "int32"); // TODO uint8
 });
 
 test(async function npy_serialize() {

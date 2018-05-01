@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@types/node": "^8.10.11",
-    "liltest": "^0.0.5"
+    "liltest": "^0.0.5",
+    "prettier": "^1.12.1"
   }
 }
