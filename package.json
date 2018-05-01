@@ -1,12 +1,12 @@
 {
-  "name": "tfjs_npy",
-  "version": "0.0.1",
+  "name": "tfjs-npy",
+  "version": "0.0.2",
   "main": "dist/npy.js",
   "license": "Apache-2.0",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/propelml/tfjs_npy.git"
+    "url": "git+https://github.com/propelml/tfjs-npy.git"
   },
   "scripts": {
     "build": "tsc",
