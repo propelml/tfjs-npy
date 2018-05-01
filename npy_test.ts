@@ -1,3 +1,16 @@
+/*!
+Copyright 2018 Propel http://propel.site/.  All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 import { test, assertEqual } from "liltest";
 import * as tf from "@tensorflow/tfjs-core";
 import * as npy from "./npy";
@@ -5,8 +18,8 @@ import { readFileSync } from "fs";
 const { expectArraysClose } = tf.test_util;
 
 async function load(fn: string): Promise<tf.Tensor> {
-  let b = readFileSync(__dirname + "/testdata/" + fn, null);
-  let ab = bufferToArrayBuffer(b);
+  const b = readFileSync(__dirname + "/testdata/" + fn, null);
+  const ab = bufferToArrayBuffer(b);
   return await npy.parse(ab);
 }
 

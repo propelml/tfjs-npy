@@ -1,15 +1,15 @@
 /*!
- Copyright 2018 Propel http://propel.site/.  All rights reserved.
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- http://www.apache.org/licenses/LICENSE-2.0
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Copyright 2018 Propel http://propel.site/.  All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 // This module saves and loads from the numpy format.
 // https://docs.scipy.org/doc/numpy/neps/npy-format.html
@@ -26,7 +26,8 @@ export async function serialize(tensor: tf.Tensor): Promise<ArrayBuffer> {
   // output ArrayBuffer.
   const magicStr = "NUMPY";
   const versionStr = "\x01\x00";
-  const [d, fo, s] = [descr, "False", tensor.shape.join(",") + ","];
+  const shapeStr = String(tensor.shape.join(",")) + ",";
+  const [d, fo, s] = [descr, "False", shapeStr];
   let header = `{'descr': '${d}', 'fortran_order': ${fo}, 'shape': (${s}), }`;
   const unpaddedLength =
     1 + magicStr.length + versionStr.length + 2 + header.length;
@@ -67,6 +68,9 @@ export async function serialize(tensor: tf.Tensor): Promise<ArrayBuffer> {
         view.setInt32(pos, data[i], true);
         pos += 4;
         break;
+
+      default:
+        throw Error(`dtype ${tensor.dtype} not yet supported.`);
     }
   }
   return ab;
@@ -82,11 +86,15 @@ export function parse(ab: ArrayBuffer): tf.Tensor {
   const byte0 = view.getUint8(pos++);
   const magicStr = dataViewToAscii(new DataView(ab, pos, 5));
   pos += 5;
-  if (byte0 !== 0x93 || magicStr !== "NUMPY") throw Error("Not a numpy file.");
+  if (byte0 !== 0x93 || magicStr !== "NUMPY") {
+    throw Error("Not a numpy file.");
+  }
 
   // Parse the version
   const version = [view.getUint8(pos++), view.getUint8(pos++)].join(".");
-  if (version !== "1.0") throw Error("Unsupported version.");
+  if (version !== "1.0") {
+    throw Error("Unsupported version.");
+  }
 
   // Parse the header length.
   const headerLen = view.getUint16(pos, true);
@@ -170,7 +178,7 @@ function assert(cond: boolean, msg?: string) {
 }
 
 function dataViewToAscii(dv: DataView): string {
-  var out = "";
+  let out = "";
   for (let i = 0; i < dv.byteLength; i++) {
     const val = dv.getUint8(i);
     if (val === 0) {
