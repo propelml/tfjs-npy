@@ -1,7 +1,8 @@
 {
   "name": "tfjs-npy",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/npy.js",
+  "types": "dist/npy.d.ts",
   "license": "Apache-2.0",
   "private": false,
   "repository": {
