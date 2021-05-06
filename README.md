@@ -5,11 +5,13 @@ about the file format.
 
 API:
 
-    import { parse, serialize } from "tfjs-npy"
+```ts
+import { parse, serialize } from "tfjs-npy"
 
-    parse(ab: ArrayBuffer): tf.Tensor
+function parse(ab: ArrayBuffer): tf.Tensor
 
-    serialize(tensor: tf.Tensor): Promise<ArrayBuffer>
+function serialize(tensor: tf.Tensor): Promise<ArrayBuffer>
+```
 
 https://github.com/propelml/tfjs-npy
 
