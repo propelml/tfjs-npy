@@ -18,9 +18,10 @@ import * as tf from "@tensorflow/tfjs-core";
 
 /** Serializes a tensor into a npy file contents. */
 export async function serialize(tensor: tf.Tensor): Promise<ArrayBuffer> {
-  const descr = new Map([["float32", "<f4"], ["int32", "<i4"]]).get(
-    tensor.dtype,
-  );
+  const descr = new Map([
+    ["float32", "<f4"],
+    ["int32", "<i4"],
+  ]).get(tensor.dtype);
 
   // First figure out how long the file is going to be so we can create the
   // output ArrayBuffer.
@@ -32,7 +33,7 @@ export async function serialize(tensor: tf.Tensor): Promise<ArrayBuffer> {
   const unpaddedLength =
     1 + magicStr.length + versionStr.length + 2 + header.length;
   // Spaces to 16-bit align.
-  const padding = " ".repeat((16 - unpaddedLength % 16) % 16);
+  const padding = " ".repeat((16 - (unpaddedLength % 16)) % 16);
   header += padding;
   assertEqual((unpaddedLength + padding.length) % 16, 0);
   // Either int32 or float32 for now Both 4 bytes per element.
