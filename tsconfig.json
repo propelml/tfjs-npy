@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "noImplicitAny": true,
+    "strict": true,
     "sourceMap": true,
     "removeComments": true,
     "preserveConstEnums": true,
@@ -11,13 +11,14 @@
     "outDir": "./dist",
     "noUnusedLocals": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
     "noUnusedParameters": false,
     "pretty": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    // Necessary for TensorFlow.js
+    // See https://www.tensorflow.org/js/tutorials/setup#typescript
+    "skipLibCheck": true
   },
   "include": ["*.ts"]
 }

@@ -12,7 +12,7 @@ limitations under the License.
 */
 
 import { test, assertEqual } from "liltest";
-import * as tf from "@tensorflow/tfjs-core";
+import * as tf from "@tensorflow/tfjs-node";
 import * as npy from "./npy";
 import { readFileSync } from "fs";
 const { expectArraysClose } = tf.test_util;
